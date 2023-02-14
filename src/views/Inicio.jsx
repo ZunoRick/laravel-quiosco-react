@@ -1,11 +1,24 @@
-import { productos as data} from "../data/productos";
+import { useEffect, useState } from 'react';
+import useSWR from 'swr'
 import Producto from "../components/Producto";
+import { Spinner } from '../components/Spinner';
+import clienteAxios from '../config/axios';
 import useQuiosco from "../hooks/useQuiosco";
 
 export default function Inicio() {
-  
+  const [productos, setProductos] = useState([])
   const { categoriaActual } = useQuiosco()
-  const productos = data.filter(producto => producto.categoria_id === categoriaActual.id)
+
+  //Consulta SWR
+  const fetcher = () => clienteAxios('/api/productos').then( data => data.data)
+  const { data, error, isLoading, isValidating } = useSWR('/api/productos', fetcher, {
+    refreshInterval: 1000
+  })
+
+  useEffect(() => {
+    if(!isLoading || !isValidating)
+      setProductos(data.data.filter(producto => producto.categoria_id === categoriaActual.id))
+  }, [isLoading, categoriaActual, isValidating])
 
   return (
     <>
@@ -15,12 +28,16 @@ export default function Inicio() {
       </p>
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        { productos.map(producto => (
-          <Producto
-            key = {  producto.imagen }
-            producto = { producto }
-          />
-        )) }
+        { isLoading 
+          ? (<Spinner
+              isLoading
+          />)
+          : productos.map(producto => (
+              <Producto
+                key = {  producto.imagen }
+                producto = { producto }
+              />
+            )) }
       </div>
     </>
   )
