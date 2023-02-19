@@ -2,11 +2,12 @@ import { Outlet } from "react-router-dom";
 import Modal from "react-modal";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { Slide, Zoom, Flip, Bounce } from 'react-toastify';
+import { Zoom } from 'react-toastify';
 import Sidebar from "../components/Sidebar";
 import Resumen from "../components/Resumen";
 import useQuiosco from "../hooks/useQuiosco";
 import { ModalProducto } from "../components/ModalProducto";
+import { useAuth } from "../hooks/useAuth";
 
 const customStyles = {
   content: {
@@ -22,6 +23,7 @@ const customStyles = {
 Modal.setAppElement('#root')
 
 export default function Layout() {
+  const { user, error } = useAuth({ middleware:'auth' })
   const { modal } = useQuiosco()
   
   return (
