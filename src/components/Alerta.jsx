@@ -6,3 +6,5 @@ export const Alerta = ({ children }) => {
     </div>
   )
 }
+
+export default Alerta

@@ -21,10 +21,13 @@ export const useAuth = ({ middleware, url }) =>{
 
   const login = async (datos, setErrores) => {
     try {
-      const { data } = await clienteAxios.post('/api/login', datos)
-      localStorage.setItem('AUTH_TOKEN', data.token)
-      setErrores([])
-      await mutate()
+      const { data } = await clienteAxios.post('/api/login', datos);
+      localStorage.setItem('AUTH_TOKEN', data.token);
+      setErrores([]);
+      await mutate();
+      console.log(middleware);
+      console.log(url);
+      console.log(user);
     } catch (error) {
       setErrores(Object.values(error.response.data.errors));
     }
